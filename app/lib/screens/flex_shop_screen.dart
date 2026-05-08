@@ -32,6 +32,7 @@ class _FlexShopScreenState extends State<FlexShopScreen> {
   bool _loading = true;
   String? _busyItemId;
   String? _message;
+  String? _error;
 
   @override
   void initState() {
@@ -41,14 +42,25 @@ class _FlexShopScreenState extends State<FlexShopScreen> {
   }
 
   Future<void> _load() async {
-    final items = await widget.api.getFlexItems();
-    final owned = await widget.api.getOwnedItems(widget.userId);
-    if (!mounted) return;
     setState(() {
-      _items = items;
-      _owned = owned;
-      _loading = false;
+      _loading = true;
+      _error = null;
     });
+    try {
+      final items = await widget.api.getFlexItems();
+      final owned = await widget.api.getOwnedItems(widget.userId);
+      if (!mounted) return;
+      setState(() {
+        _items = items;
+        _owned = owned;
+      });
+    } on ApiException catch (error) {
+      if (mounted) setState(() => _error = error.message);
+    } catch (_) {
+      if (mounted) setState(() => _error = '플렉스샵을 불러오지 못했어요.');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   Future<void> _buy(FlexItem item) async {
@@ -83,6 +95,20 @@ class _FlexShopScreenState extends State<FlexShopScreen> {
       body: AppBackground(
         child: _loading
             ? const Center(child: CircularProgressIndicator())
+            : _error != null
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    _error!,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: AppColors.danger,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              )
             : ListView(
                 padding: const EdgeInsets.all(18),
                 children: [

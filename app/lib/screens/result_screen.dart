@@ -108,7 +108,7 @@ class _ResultScreenState extends State<ResultScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                '현재 잔고 ${formatPoint(stats.virtualBalance)}',
+                '현재 가상 잔고 ${formatKrw(stats.virtualBalance)}',
                 style: const TextStyle(
                   color: AppColors.positive,
                   fontWeight: FontWeight.w900,

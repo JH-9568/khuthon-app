@@ -42,7 +42,7 @@ def _fallback(menu_name: str, eating_out_price: int) -> dict[str, Any]:
 
 
 async def generate_recipe(menu_name: str, eating_out_price: int) -> dict[str, Any]:
-    api_key = os.getenv("LLM_API_KEY")
+    api_key = os.getenv("LLM_API_KEY") or os.getenv("GEMINI_API_KEY")
     if not api_key or genai is None:
         return _fallback(menu_name, eating_out_price)
 
@@ -55,6 +55,19 @@ async def generate_recipe(menu_name: str, eating_out_price: int) -> dict[str, An
         )
         response = client.models.generate_content(model=model_name, contents=prompt)
         result = parse_json_safe(response.text)
+        _validate_recipe_data(result)
         return {**result, "source": "llm"}
     except Exception:
         return _fallback(menu_name, eating_out_price)
+
+
+def _validate_recipe_data(data: dict[str, Any]) -> None:
+    required = {
+        "homeCookingCost": int,
+        "ingredients": list,
+        "recipe": list,
+        "message": str,
+    }
+    for key, value_type in required.items():
+        if not isinstance(data.get(key), value_type):
+            raise ValueError(f"Invalid LLM response: {key}")

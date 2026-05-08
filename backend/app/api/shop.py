@@ -7,7 +7,7 @@ from app.services.shop_service import get_flex_items, get_user_items, purchase_i
 router = APIRouter(tags=["shop"])
 
 
-@router.get("/flex-items", response_model=ApiResponse)
+@router.get("/flex-items", response_model=ApiResponse, response_model_exclude_none=True)
 async def flex_items() -> ApiResponse:
     try:
         return ApiResponse(success=True, data=await get_flex_items())
@@ -15,7 +15,11 @@ async def flex_items() -> ApiResponse:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
-@router.post("/flex-items/{item_id}/purchase", response_model=ApiResponse)
+@router.post(
+    "/flex-items/{item_id}/purchase",
+    response_model=ApiResponse,
+    response_model_exclude_none=True,
+)
 async def buy(item_id: str, req: BuyRequest) -> ApiResponse:
     try:
         return ApiResponse(success=True, data=await purchase_item(item_id, req.userId))
@@ -25,7 +29,11 @@ async def buy(item_id: str, req: BuyRequest) -> ApiResponse:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
-@router.get("/users/{user_id}/items", response_model=ApiResponse)
+@router.get(
+    "/users/{user_id}/items",
+    response_model=ApiResponse,
+    response_model_exclude_none=True,
+)
 async def user_items(user_id: str) -> ApiResponse:
     try:
         return ApiResponse(success=True, data=await get_user_items(user_id))

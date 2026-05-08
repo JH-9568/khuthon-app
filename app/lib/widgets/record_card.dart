@@ -59,7 +59,7 @@ class RecordCard extends StatelessWidget {
           Text(
             cooked
                 ? '${formatKrw(record.savingAmount)} 절약 · ${formatPoint(record.rewardPoint)}'
-                : '가상 잔고 -${formatPoint(record.eatingOutPrice)}',
+                : '가상 잔고 -${formatKrw(record.eatingOutPrice)}',
             style: const TextStyle(
               fontWeight: FontWeight.w900,
               color: AppColors.nearBlack,

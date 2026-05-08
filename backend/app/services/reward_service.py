@@ -1,6 +1,6 @@
 def calculate_rewards(eating_out_price: int, home_cooking_cost: int) -> dict[str, int]:
     saving_amount = eating_out_price - home_cooking_cost
-    reward_point = max(saving_amount, 0) * 30
+    reward_point = max(saving_amount, 0) * 10
     return {"savingAmount": saving_amount, "rewardPoint": reward_point}
 
 

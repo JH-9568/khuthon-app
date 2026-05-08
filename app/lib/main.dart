@@ -62,6 +62,15 @@ class _AppGateState extends State<AppGate> {
     });
   }
 
+  Future<void> _handleLoggedOut() async {
+    await _api.clearSession();
+    if (!mounted) return;
+    setState(() {
+      _userId = null;
+      _nickname = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) {
@@ -72,6 +81,11 @@ class _AppGateState extends State<AppGate> {
       return LoginScreen(api: _api, onLoggedIn: _handleLoggedIn);
     }
 
-    return HomeScreen(api: _api, userId: _userId!, nickname: _nickname!);
+    return HomeScreen(
+      api: _api,
+      userId: _userId!,
+      nickname: _nickname!,
+      onLogout: _handleLoggedOut,
+    );
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -110,6 +111,9 @@ class ApiService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('userId');
     await prefs.remove('nickname');
+    _mockStats = null;
+    _mockRecords.clear();
+    _mockOwnedItems.clear();
   }
 
   Future<User> login(String nickname) async {
@@ -129,7 +133,8 @@ class ApiService {
       await _saveSession(user.id, user.nickname);
       _mockStats ??= _statsFromUser(user);
       return user;
-    } catch (_) {
+    } catch (error) {
+      if (!_shouldUseMockFallback(error)) rethrow;
       final user = User(
         id: 'mock_user_${cleanNickname.hashCode.abs()}',
         nickname: cleanNickname,
@@ -150,7 +155,8 @@ class ApiService {
       final stats = UserStats.fromJson(json['data'] as Map<String, dynamic>);
       _mockStats = stats;
       return stats;
-    } catch (_) {
+    } catch (error) {
+      if (!_shouldUseMockFallback(error)) rethrow;
       return _ensureMockStats(userId, nickname);
     }
   }
@@ -165,7 +171,8 @@ class ApiService {
         'eatingOutPrice': eatingOutPrice,
       });
       return CompareResult.fromJson(json['data'] as Map<String, dynamic>);
-    } catch (_) {
+    } catch (error) {
+      if (!_shouldUseMockFallback(error)) rethrow;
       return _mockCompare(menuName.trim(), eatingOutPrice);
     }
   }
@@ -204,7 +211,8 @@ class ApiService {
         userStats: stats,
         characterState: data['characterState'] as String,
       );
-    } catch (_) {
+    } catch (error) {
+      if (!_shouldUseMockFallback(error)) rethrow;
       return _mockSaveDecision(
         userId: userId,
         result: result,
@@ -222,7 +230,8 @@ class ApiService {
             (item) => ConsumptionRecord.fromJson(item as Map<String, dynamic>),
           )
           .toList();
-    } catch (_) {
+    } catch (error) {
+      if (!_shouldUseMockFallback(error)) rethrow;
       return List<ConsumptionRecord>.from(_mockRecords);
     }
   }
@@ -233,7 +242,8 @@ class ApiService {
       return (json['data'] as List<dynamic>)
           .map((item) => RankingUser.fromJson(item as Map<String, dynamic>))
           .toList();
-    } catch (_) {
+    } catch (error) {
+      if (!_shouldUseMockFallback(error)) rethrow;
       final stats = _ensureMockStats(userId, nickname);
       final users =
           [
@@ -287,7 +297,8 @@ class ApiService {
       return (json['data'] as List<dynamic>)
           .map((item) => FlexItem.fromJson(item as Map<String, dynamic>))
           .toList();
-    } catch (_) {
+    } catch (error) {
+      if (!_shouldUseMockFallback(error)) rethrow;
       return _shopItems;
     }
   }
@@ -298,7 +309,8 @@ class ApiService {
       return (json['data'] as List<dynamic>)
           .map((item) => PurchasedItem.fromJson(item as Map<String, dynamic>))
           .toList();
-    } catch (_) {
+    } catch (error) {
+      if (!_shouldUseMockFallback(error)) rethrow;
       return List<PurchasedItem>.from(_mockOwnedItems);
     }
   }
@@ -327,7 +339,8 @@ class ApiService {
       );
     } on ApiException {
       rethrow;
-    } catch (_) {
+    } catch (error) {
+      if (!_shouldUseMockFallback(error)) rethrow;
       return _mockPurchase(userId: userId, nickname: nickname, item: item);
     }
   }
@@ -352,7 +365,12 @@ class ApiService {
       response = await _client.get(uri).timeout(_timeout);
     }
 
-    final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+    final Map<String, dynamic> decoded;
+    try {
+      decoded = jsonDecode(response.body) as Map<String, dynamic>;
+    } catch (_) {
+      throw const ApiException('서버 응답을 읽지 못했어요.');
+    }
     if (decoded['success'] != true) {
       throw ApiException(
         decoded['message'] as String? ??
@@ -367,6 +385,10 @@ class ApiService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('userId', userId);
     await prefs.setString('nickname', nickname);
+  }
+
+  bool _shouldUseMockFallback(Object error) {
+    return error is TimeoutException || error is http.ClientException;
   }
 
   UserStats _statsFromUser(User user) {
@@ -412,7 +434,7 @@ class ApiService {
   CompareResult _mockCompare(String menuName, int eatingOutPrice) {
     final homeCost = min(max((eatingOutPrice * .42).round(), 3500), 18000);
     final saving = eatingOutPrice - homeCost;
-    final reward = max(saving, 0) * 30;
+    final reward = max(saving, 0) * 10;
     return CompareResult(
       menuName: menuName,
       eatingOutPrice: eatingOutPrice,

@@ -32,6 +32,21 @@ class _RecordsScreenState extends State<RecordsScreen> {
         child: FutureBuilder<List<ConsumptionRecord>>(
           future: _future,
           builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Text(
+                    '소비 기록을 불러오지 못했어요.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              );
+            }
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             }

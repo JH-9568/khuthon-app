@@ -8,7 +8,7 @@ from app.services.reward_service import calculate_rewards
 router = APIRouter(tags=["compare"])
 
 
-@router.post("/compare", response_model=ApiResponse)
+@router.post("/compare", response_model=ApiResponse, response_model_exclude_none=True)
 async def compare(req: CompareRequest) -> ApiResponse:
     try:
         recipe_data = await generate_recipe(req.menuName, req.eatingOutPrice)

@@ -83,7 +83,7 @@ class VirtualAccountCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: const Text(
-                  '게임 잔고',
+                  '리워드 포인트',
                   style: TextStyle(
                     color: Colors.white70,
                     fontSize: 12,
@@ -93,7 +93,7 @@ class VirtualAccountCard extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               const Text(
-                '가상 잔고 포인트',
+                '안전하게 플렉스할 수 있는 포인트',
                 style: TextStyle(
                   color: Colors.white70,
                   fontSize: 14,
@@ -102,7 +102,7 @@ class VirtualAccountCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                formatPoint(stats.virtualBalance),
+                formatPoint(stats.totalRewardPoint),
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 42,
@@ -122,8 +122,8 @@ class VirtualAccountCard extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: _Metric(
-                      label: '포인트',
-                      value: formatPoint(stats.totalRewardPoint),
+                      label: '가상 잔고',
+                      value: formatKrw(stats.virtualBalance),
                     ),
                   ),
                 ],

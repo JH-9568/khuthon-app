@@ -8,7 +8,7 @@ from app.services.user_service import get_user_stats, login_user
 router = APIRouter(tags=["users"])
 
 
-@router.post("/users/login", response_model=ApiResponse)
+@router.post("/users/login", response_model=ApiResponse, response_model_exclude_none=True)
 async def login(req: LoginRequest) -> ApiResponse:
     try:
         return ApiResponse(success=True, data=await login_user(req.nickname))
@@ -18,7 +18,11 @@ async def login(req: LoginRequest) -> ApiResponse:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
-@router.get("/users/{user_id}/stats", response_model=ApiResponse)
+@router.get(
+    "/users/{user_id}/stats",
+    response_model=ApiResponse,
+    response_model_exclude_none=True,
+)
 async def stats(user_id: str) -> ApiResponse:
     try:
         return ApiResponse(success=True, data=await get_user_stats(user_id))
@@ -28,7 +32,11 @@ async def stats(user_id: str) -> ApiResponse:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
-@router.get("/users/{user_id}/records", response_model=ApiResponse)
+@router.get(
+    "/users/{user_id}/records",
+    response_model=ApiResponse,
+    response_model_exclude_none=True,
+)
 async def records(user_id: str) -> ApiResponse:
     try:
         return ApiResponse(success=True, data=await get_user_records(user_id))

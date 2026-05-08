@@ -7,7 +7,7 @@ from app.services.decision_service import save_decision
 router = APIRouter(tags=["decisions"])
 
 
-@router.post("/decisions", response_model=ApiResponse)
+@router.post("/decisions", response_model=ApiResponse, response_model_exclude_none=True)
 async def decisions(req: DecisionRequest) -> ApiResponse:
     try:
         return ApiResponse(success=True, data=await save_decision(req))

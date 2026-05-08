@@ -181,7 +181,7 @@ user_id: string
     "userId": "user_uuid",
     "nickname": "jinhyung",
     "totalSavedAmount": 145000,
-    "totalRewardPoint": 4350000,
+    "totalRewardPoint": 1450000,
     "virtualBalance": 145000,
     "ownedItemCount": 2,
     "recordCount": 8
@@ -212,7 +212,7 @@ This endpoint does not save the user's final decision.
     "eatingOutPrice": 23000,
     "homeCookingCost": 8500,
     "savingAmount": 14500,
-    "rewardPoint": 435000,
+    "rewardPoint": 145000,
     "ingredients": [
       {
         "name": "닭발",
@@ -237,7 +237,7 @@ This endpoint does not save the user's final decision.
       "Stir-fry the chicken feet with the sauce.",
       "Add vegetables and finish."
     ],
-    "message": "You can save 14,500 KRW and earn 435,000 points by cooking this at home.",
+    "message": "You can save 14,500 KRW and earn 145,000 points by cooking this at home.",
     "source": "llm"
   }
 }
@@ -253,7 +253,7 @@ If the LLM call fails, return the same response shape with source fallback.
     "eatingOutPrice": 23000,
     "homeCookingCost": 9000,
     "savingAmount": 14000,
-    "rewardPoint": 420000,
+    "rewardPoint": 140000,
     "ingredients": [
       {
         "name": "Main ingredient",
@@ -282,7 +282,7 @@ If the LLM call fails, return the same response shape with source fallback.
 ### Calculation Rules
 
 savingAmount = eatingOutPrice - homeCookingCost
-rewardPoint = savingAmount * 30
+rewardPoint = savingAmount * 10
 
 ### Important Rules
 
@@ -305,7 +305,7 @@ Saves the user's final decision and updates user stats.
   "eatingOutPrice": 23000,
   "homeCookingCost": 8500,
   "savingAmount": 14500,
-  "rewardPoint": 435000,
+  "rewardPoint": 145000,
   "choice": "cook",
   "message": "You can save 14,500 KRW."
 }
@@ -322,13 +322,13 @@ Saves the user's final decision and updates user stats.
       "eatingOutPrice": 23000,
       "homeCookingCost": 8500,
       "savingAmount": 14500,
-      "rewardPoint": 435000,
+      "rewardPoint": 145000,
       "choice": "cook",
       "createdAt": "2026-05-08T00:00:00"
     },
     "userStats": {
       "totalSavedAmount": 14500,
-      "totalRewardPoint": 435000,
+      "totalRewardPoint": 145000,
       "virtualBalance": 14500
     },
     "characterState": "rich_getting_better"
@@ -404,7 +404,7 @@ user_id: string
       "eatingOutPrice": 23000,
       "homeCookingCost": 8500,
       "savingAmount": 14500,
-      "rewardPoint": 435000,
+      "rewardPoint": 145000,
       "choice": "cook",
       "message": "You can save 14,500 KRW.",
       "createdAt": "2026-05-08T00:00:00"
@@ -453,7 +453,7 @@ Returns top users ordered by total saved amount.
       "userId": "user_uuid_1",
       "nickname": "savingKing",
       "totalSavedAmount": 240000,
-      "totalRewardPoint": 7200000,
+      "totalRewardPoint": 2400000,
       "virtualBalance": 240000
     },
     {
@@ -461,7 +461,7 @@ Returns top users ordered by total saved amount.
       "userId": "user_uuid_2",
       "nickname": "jinhyung",
       "totalSavedAmount": 145000,
-      "totalRewardPoint": 4350000,
+      "totalRewardPoint": 1450000,
       "virtualBalance": 145000
     }
   ]
@@ -540,15 +540,15 @@ item_id: string
   "data": {
     "purchasedItem": {
       "id": "item_uuid",
-      "name": "Sports Car",
-      "price": 3000000,
-      "emoji": "🏎️",
-      "category": "vehicle",
-      "description": "A dream car bought with saved money points."
+      "name": "Luxury Watch",
+      "price": 300000,
+      "emoji": "⌚",
+      "category": "fashion",
+      "description": "A shiny watch for safe in-app flex."
     },
     "userStats": {
       "totalSavedAmount": 145000,
-      "totalRewardPoint": 1350000,
+      "totalRewardPoint": 1150000,
       "virtualBalance": 145000
     }
   }

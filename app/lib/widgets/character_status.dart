@@ -152,7 +152,7 @@ class CharacterStatus extends StatelessWidget {
         state: 'rich_getting_better',
         badge: '성장',
         title: '점점 부자 되는 중',
-        message: '집밥 선택으로 잔고와 포인트가 같이 반짝이고 있어요.',
+        message: '아낀 금액은 잔고에, 리워드는 포인트로 쌓이고 있어요.',
         surfaceColors: [Color(0xFFF4FFE9), Color(0xFFD9F8C3)],
         bodyColors: [Color(0xFFCDFFAD), AppColors.wiseGreen],
         textColor: AppColors.positive,

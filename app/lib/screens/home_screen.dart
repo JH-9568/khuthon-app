@@ -19,11 +19,13 @@ class HomeScreen extends StatefulWidget {
     required this.api,
     required this.userId,
     required this.nickname,
+    required this.onLogout,
   });
 
   final ApiService api;
   final String userId;
   final String nickname;
+  final Future<void> Function() onLogout;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -69,7 +71,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _compare(String menuName, int eatingOutPrice) async {
-    setState(() => _comparing = true);
+    setState(() {
+      _comparing = true;
+      _error = null;
+    });
     try {
       final result = await widget.api.compare(
         menuName: menuName,
@@ -90,6 +95,10 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() => _stats = updated);
       }
       await _load();
+    } on ApiException catch (error) {
+      if (mounted) setState(() => _error = error.message);
+    } catch (_) {
+      if (mounted) setState(() => _error = '비교 결과를 불러오지 못했어요.');
     } finally {
       if (mounted) setState(() => _comparing = false);
     }
@@ -151,10 +160,41 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> _logout() async {
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('로그아웃'),
+        content: const Text('현재 닉네임 세션을 종료할까요?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('취소'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('로그아웃'),
+          ),
+        ],
+      ),
+    );
+    if (shouldLogout != true) return;
+    await widget.onLogout();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Flex')),
+      appBar: AppBar(
+        title: const Text('Flex'),
+        actions: [
+          IconButton(
+            tooltip: '로그아웃',
+            onPressed: _logout,
+            icon: const Icon(Icons.logout),
+          ),
+        ],
+      ),
       bottomNavigationBar: _HomeActionBar(
         onRecords: () =>
             _open(RecordsScreen(api: widget.api, userId: widget.userId)),

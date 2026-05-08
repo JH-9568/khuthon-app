@@ -6,7 +6,7 @@ from app.services.ranking_service import get_rankings
 router = APIRouter(tags=["rankings"])
 
 
-@router.get("/rankings", response_model=ApiResponse)
+@router.get("/rankings", response_model=ApiResponse, response_model_exclude_none=True)
 async def rankings() -> ApiResponse:
     try:
         return ApiResponse(success=True, data=await get_rankings())

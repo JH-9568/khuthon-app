@@ -82,7 +82,7 @@
 
 ## Phase 6. Polish
 
-- [ ] [POLISH] Prepare demo user data
-- [ ] [POLISH] Improve UI copy
-- [ ] [POLISH] Improve character visuals
+- [x] [POLISH] Prepare demo user data
+- [x] [POLISH] Improve UI copy
+- [x] [POLISH] Improve character visuals
 - [ ] [POLISH] Prepare presentation script
