@@ -14,7 +14,7 @@
 - Python
 - Pydantic
 - Supabase (PostgreSQL via supabase-py)
-- LLM API (recipe/cost generation)
+- Google Gemini API (recipe/cost generation via `google-generativeai`)
 
 ---
 
@@ -23,10 +23,10 @@
 All code follows a strict **router → service** layer structure.
 
 ```
-routers/compare.py        # HTTP only: parse request, serialize response
+routers/compare.py                 # HTTP only: parse request, serialize response
     ↓ calls
-services/llm_recipe_service.py   # Business logic: LLM call, fallback
-services/reward_service.py       # savingAmount, rewardPoint calculation
+services/llm_recipe_service.py     # Business logic: LLM call, fallback
+services/reward_service.py         # savingAmount, rewardPoint calculation
 ```
 
 Rules:
@@ -43,26 +43,24 @@ Rules:
 backend/
 ├── app/
 │   ├── main.py
+│   ├── database.py              # Supabase client singleton
 │   ├── api/
 │   │   ├── users.py
 │   │   ├── compare.py
 │   │   ├── decisions.py
 │   │   ├── rankings.py
-│   │   ├── flex_items.py
-│   │   └── records.py
+│   │   └── shop.py              # flex items + purchase
 │   ├── schemas/
 │   │   ├── user.py
 │   │   ├── compare.py
 │   │   ├── decision.py
-│   │   ├── flex_item.py
-│   │   └── common.py
+│   │   ├── shop.py              # FlexItem, BuyRequest, BuyResponse
+│   │   └── common.py            # ApiResponse base schema
 │   ├── services/
-│   │   ├── user_service.py
 │   │   ├── llm_recipe_service.py
 │   │   ├── fallback_recipe_service.py
 │   │   └── reward_service.py
 │   └── utils/
-│       ├── supabase_client.py
 │       └── safe_json.py
 ├── requirements.txt
 └── .env.example
@@ -75,10 +73,10 @@ backend/
 For every new endpoint, follow this order:
 
 ```
-1. schemas/{name}.py          — Pydantic request/response models
-2. services/{name}_service.py — Business logic
-3. api/{name}.py              — Router (calls service)
-4. main.py                    — Register router
+1. schemas/{name}.py           — Pydantic request/response models
+2. services/{name}_service.py  — Business logic
+3. api/{name}.py               — Router (calls service)
+4. main.py                     — Register router
 ```
 
 ---
@@ -140,14 +138,19 @@ class CompareData(BaseModel):
 
 ```python
 # services/llm_recipe_service.py
-from services.fallback_recipe_service import get_fallback
-from utils.safe_json import parse_json_safe
+import os
+import google.generativeai as genai
+from app.services.fallback_recipe_service import get_fallback
+from app.utils.safe_json import parse_json_safe
+
+genai.configure(api_key=os.environ["LLM_API_KEY"])
+model = genai.GenerativeModel(os.environ.get("LLM_MODEL", "gemini-1.5-flash"))
 
 async def generate_recipe(menu_name: str, eating_out_price: int) -> dict:
     try:
-        # LLM call here
-        raw = await call_llm(menu_name, eating_out_price)
-        result = parse_json_safe(raw)
+        prompt = RECIPE_PROMPT.format(menu_name=menu_name, eating_out_price=eating_out_price)
+        response = model.generate_content(prompt)
+        result = parse_json_safe(response.text)
         return {**result, "source": "llm"}
     except Exception:
         return {**get_fallback(), "source": "fallback"}
@@ -165,7 +168,7 @@ from schemas.common import ApiResponse
 from services.llm_recipe_service import generate_recipe
 from services.reward_service import calculate_rewards
 
-router = APIRouter(prefix="/api", tags=["compare"])
+router = APIRouter(tags=["compare"])  # prefix set in main.py when registering: app.include_router(router, prefix="/api")
 
 @router.post("/compare", response_model=ApiResponse)
 async def compare(req: CompareRequest):
@@ -181,8 +184,10 @@ async def compare(req: CompareRequest):
 
 ## Supabase Client
 
+Singleton lives in `app/database.py` (not `utils/supabase_client.py`).
+
 ```python
-# utils/supabase_client.py
+# database.py
 import os
 from supabase import create_client, Client
 from dotenv import load_dotenv
@@ -198,7 +203,7 @@ supabase: Client = create_client(
 Usage in services:
 
 ```python
-from utils.supabase_client import supabase
+from app.database import supabase
 
 async def get_user(nickname: str):
     result = supabase.table("users").select("*").eq("nickname", nickname).execute()
@@ -223,16 +228,29 @@ def calculate_rewards(eating_out_price: int, home_cooking_cost: int) -> dict:
 
 ## Character State Rules
 
+Source of truth: docs/SCREEN_FLOW.md.
+Always match this exactly — Flutter uses the same string values.
+
 ```python
 def get_character_state(virtual_balance: int) -> str:
-    if virtual_balance >= 100000:
-        return "rich_getting_better"
-    elif virtual_balance >= 0:
-        return "neutral"
-    elif virtual_balance >= -100000:
-        return "poor_getting_worse"
+    if virtual_balance >= 5_000_000:
+        return "rich_5"
+    elif virtual_balance >= 1_000_000:
+        return "rich_4"
+    elif virtual_balance >= 500_000:
+        return "rich_3"
+    elif virtual_balance >= 100_000:
+        return "rich_2"
+    elif virtual_balance >= 10_000:
+        return "rich_1"
+    elif virtual_balance >= -10_000:
+        return "normal"
+    elif virtual_balance >= -100_000:
+        return "poor_1"
+    elif virtual_balance >= -500_000:
+        return "poor_2"
     else:
-        return "bankrupt_warning"
+        return "poor_3"
 ```
 
 ---
@@ -303,8 +321,8 @@ Return JSON:
 ```
 SUPABASE_URL=your_supabase_url
 SUPABASE_KEY=your_supabase_key
-LLM_API_KEY=your_llm_api_key
-LLM_MODEL=claude-haiku-4-5-20251001
+LLM_API_KEY=your_gemini_api_key   # Google AI Studio key (AIzaSy...)
+LLM_MODEL=gemini-1.5-flash        # Google Gemini model
 ```
 
 - Never hardcode secrets
@@ -317,6 +335,6 @@ LLM_MODEL=claude-haiku-4-5-20251001
 
 - Calculate `savingAmount` and `rewardPoint` in `reward_service.py`, never in LLM
 - Always wrap LLM calls in try/except and return fallback on any failure
-- Supabase client is a singleton — import from `utils/supabase_client.py`
+- Supabase client is a singleton — import from `app.database`
 - CORS must be configured in `main.py` for Flutter emulator access
 - `10.0.2.2:8000` is Android emulator's localhost — configure CORS accordingly
