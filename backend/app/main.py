@@ -27,7 +27,7 @@ app.add_middleware(
 async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
     return JSONResponse(
         status_code=exc.status_code,
-        content={"success": False, "message": exc.detail},
+        content={"success": False, "data": None, "error": exc.detail},
     )
 
 

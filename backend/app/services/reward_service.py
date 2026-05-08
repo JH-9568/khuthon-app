@@ -9,6 +9,6 @@ def get_character_state(virtual_balance: int) -> str:
         return "bankrupt_warning"
     if virtual_balance < 0:
         return "poor_getting_worse"
-    if virtual_balance > 0:
-        return "rich_getting_better"
-    return "neutral"
+    if virtual_balance == 0:
+        return "neutral"
+    return "rich_getting_better"

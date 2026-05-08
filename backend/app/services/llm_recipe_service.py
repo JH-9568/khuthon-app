@@ -2,7 +2,7 @@ import os
 from typing import Any
 
 try:
-    import google.generativeai as genai
+    from google import genai
 except ImportError:
     genai = None
 
@@ -46,14 +46,13 @@ async def generate_recipe(menu_name: str, eating_out_price: int) -> dict[str, An
         return _fallback(menu_name, eating_out_price)
 
     try:
-        genai.configure(api_key=api_key)
-        model_name = os.getenv("LLM_MODEL", "gemini-1.5-flash")
-        model = genai.GenerativeModel(model_name)
+        client = genai.Client(api_key=api_key)
+        model_name = os.getenv("LLM_MODEL", "gemini-2.0-flash")
         prompt = RECIPE_PROMPT.format(
             menu_name=menu_name,
             eating_out_price=eating_out_price,
         )
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(model=model_name, contents=prompt)
         result = parse_json_safe(response.text)
         return {**result, "source": "llm"}
     except Exception:
