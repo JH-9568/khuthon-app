@@ -171,3 +171,100 @@ What distinguishes Wise is its green-on-white-on-black material palette. Lime Gr
 3. Scale animations (1.05 hover, 0.95 active) on all interactive elements
 4. "calt" on everything — contextual alternates are mandatory
 5. Inter 600 for body — confident reading weight
+
+## Character and Item Art Direction
+
+The app should not rely on plain emoji characters or flat placeholder icons for the main experience.
+
+The core visual hook is a 3D-style virtual character that changes based on the user's spending behavior.
+
+### Character Style
+
+Use a soft 3D mascot-like character style.
+
+The character should feel:
+- cute but not childish
+- premium but playful
+- game-like
+- expressive
+- suitable for a spending-awareness app
+
+Character states:
+
+1. neutral
+   - simple casual character
+   - normal expression
+
+2. rich_getting_better
+   - confident expression
+   - shiny outfit
+   - luxury accessories
+   - positive green/gold visual effects
+
+3. poor_getting_worse
+   - tired expression
+   - messy outfit
+   - empty pocket feeling
+   - muted colors
+
+4. bankrupt_warning
+   - red warning mood
+   - receipt / debt / red sticker visual
+   - dramatic but still funny
+
+For MVP, if real 3D assets are not available, create a 3D-like visual using:
+- gradient blobs
+- soft shadows
+- large rounded shapes
+- layered circles
+- emoji only as tiny supporting detail, not the main character
+
+Do not use a single plain emoji as the main character.
+
+### Flex Shop Item Style
+
+Flex shop items should look more realistic and premium than plain emojis.
+
+Items should feel like in-app luxury rewards.
+
+Examples:
+- luxury watch
+- sports car
+- penthouse
+- designer suit
+- super car
+
+Use:
+- large item preview area
+- realistic 3D-like card
+- soft lighting
+- shadow
+- premium label
+- price emphasis
+
+Avoid:
+- small emoji-only item icons
+- plain gray purchase buttons
+- boring list UI
+
+### Shop Card Direction
+
+Each item card should include:
+- large visual area
+- item name
+- short description
+- price
+- purchase state
+- premium card layout
+
+The item visual should be the focus of the card.
+
+### Visual Priority
+
+The user should immediately understand:
+
+- saving money upgrades my character
+- wasting money makes my character poorer
+- points let me buy luxury items inside the app
+
+The UI should feel more like a reward game than a basic finance dashboard.
