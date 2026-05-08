@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CompareForm extends StatefulWidget {
-  const CompareForm({super.key, required this.onSubmit, required this.loading});
+  const CompareForm({
+    super.key,
+    required this.onSubmit,
+    required this.loading,
+    this.compact = false,
+  });
 
   final Future<void> Function(String menuName, int eatingOutPrice) onSubmit;
   final bool loading;
+  final bool compact;
 
   @override
   State<CompareForm> createState() => _CompareFormState();
@@ -39,16 +45,38 @@ class _CompareFormState extends State<CompareForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: EdgeInsets.all(widget.compact ? 20 : 18),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(widget.compact ? 34 : 30),
         border: Border.all(color: const Color(0x1F0E0F0C)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: widget.compact ? .18 : .04),
+            blurRadius: widget.compact ? 30 : 12,
+            offset: Offset(0, widget.compact ? 18 : 6),
+          ),
+        ],
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('먹고 싶은 메뉴 비교하기', style: Theme.of(context).textTheme.titleLarge),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  '먹고 싶은 메뉴 비교하기',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ),
+              if (widget.compact)
+                IconButton(
+                  onPressed: () => Navigator.of(context).maybePop(),
+                  icon: const Icon(Icons.close),
+                ),
+            ],
+          ),
           const SizedBox(height: 14),
           TextField(
             controller: _menuController,

@@ -4,6 +4,7 @@ import '../models/flex_item.dart';
 import '../models/user.dart';
 import '../services/api_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/app_background.dart';
 import '../widgets/character_status.dart';
 import '../widgets/compare_form.dart';
 import '../widgets/ranking_card.dart';
@@ -99,25 +100,51 @@ class _HomeScreenState extends State<HomeScreen> {
     await _load();
   }
 
-  Future<void> _openCompareSheet() async {
-    await showModalBottomSheet<void>(
+  Future<void> _openCompareDialog() async {
+    await showGeneralDialog<void>(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 14,
-            right: 14,
-            bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 14,
-          ),
-          child: CompareForm(
-            loading: _comparing,
-            onSubmit: (menuName, eatingOutPrice) async {
-              Navigator.of(sheetContext).pop();
-              await _compare(menuName, eatingOutPrice);
-            },
+      barrierDismissible: true,
+      barrierLabel: '비교 닫기',
+      barrierColor: AppColors.nearBlack.withValues(alpha: .42),
+      transitionDuration: const Duration(milliseconds: 230),
+      pageBuilder: (dialogContext, animation, secondaryAnimation) {
+        return const SizedBox.shrink();
+      },
+      transitionBuilder: (dialogContext, animation, secondaryAnimation, child) {
+        final curved = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutBack,
+          reverseCurve: Curves.easeInCubic,
+        );
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 18,
+              right: 18,
+              bottom: MediaQuery.of(dialogContext).viewInsets.bottom,
+            ),
+            child: Center(
+              child: FadeTransition(
+                opacity: animation,
+                child: ScaleTransition(
+                  scale: Tween<double>(begin: .86, end: 1).animate(curved),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 430),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: CompareForm(
+                        loading: _comparing,
+                        compact: true,
+                        onSubmit: (menuName, eatingOutPrice) async {
+                          Navigator.of(dialogContext).pop();
+                          await _compare(menuName, eatingOutPrice);
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         );
       },
@@ -131,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: _HomeActionBar(
         onRecords: () =>
             _open(RecordsScreen(api: widget.api, userId: widget.userId)),
-        onCompare: _openCompareSheet,
+        onCompare: _openCompareDialog,
         onShop: _stats == null
             ? null
             : () => _open(
@@ -143,42 +170,44 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
       ),
-      body: SafeArea(
-        child: _loading
-            ? const Center(child: CircularProgressIndicator())
-            : RefreshIndicator(
-                onRefresh: _load,
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(18, 18, 18, 112),
-                  children: [
-                    Text(
-                      '${widget.nickname}님, 안녕하세요',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '진짜 플렉스하기 전에, 집밥으로 얼마나 아낄 수 있는지 먼저 확인해요.',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    const SizedBox(height: 20),
-                    if (_error != null)
+      body: AppBackground(
+        child: SafeArea(
+          child: _loading
+              ? const Center(child: CircularProgressIndicator())
+              : RefreshIndicator(
+                  onRefresh: _load,
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(18, 18, 18, 112),
+                    children: [
                       Text(
-                        _error!,
-                        style: const TextStyle(color: AppColors.danger),
+                        '${widget.nickname}님, 안녕하세요',
+                        style: Theme.of(context).textTheme.headlineMedium,
                       ),
-                    if (_stats != null) ...[
-                      VirtualAccountCard(stats: _stats!),
-                      const SizedBox(height: 14),
-                      CharacterStatus(stats: _stats!, items: _items),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 8),
+                      Text(
+                        '진짜 플렉스하기 전에, 집밥으로 얼마나 아낄 수 있는지 먼저 확인해요.',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      const SizedBox(height: 20),
+                      if (_error != null)
+                        Text(
+                          _error!,
+                          style: const TextStyle(color: AppColors.danger),
+                        ),
+                      if (_stats != null) ...[
+                        VirtualAccountCard(stats: _stats!),
+                        const SizedBox(height: 14),
+                        CharacterStatus(stats: _stats!, items: _items),
+                        const SizedBox(height: 14),
+                      ],
+                      _RankingPreview(
+                        rankings: _rankings,
+                        currentUserId: widget.userId,
+                      ),
                     ],
-                    _RankingPreview(
-                      rankings: _rankings,
-                      currentUserId: widget.userId,
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+        ),
       ),
     );
   }
