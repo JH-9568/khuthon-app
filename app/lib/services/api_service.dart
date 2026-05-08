@@ -354,7 +354,11 @@ class ApiService {
 
     final decoded = jsonDecode(response.body) as Map<String, dynamic>;
     if (decoded['success'] != true) {
-      throw ApiException(decoded['message'] as String? ?? '요청에 실패했어요.');
+      throw ApiException(
+        decoded['message'] as String? ??
+            decoded['error'] as String? ??
+            '요청에 실패했어요.',
+      );
     }
     return decoded;
   }
