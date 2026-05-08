@@ -181,7 +181,7 @@ user_id: string
     "userId": "user_uuid",
     "nickname": "jinhyung",
     "totalSavedAmount": 145000,
-    "totalRewardPoint": 1450000,
+    "totalRewardPoint": 725000,
     "virtualBalance": 145000,
     "ownedItemCount": 2,
     "recordCount": 8
@@ -212,7 +212,7 @@ This endpoint does not save the user's final decision.
     "eatingOutPrice": 23000,
     "homeCookingCost": 8500,
     "savingAmount": 14500,
-    "rewardPoint": 145000,
+    "rewardPoint": 72500,
     "ingredients": [
       {
         "name": "닭발",
@@ -237,7 +237,7 @@ This endpoint does not save the user's final decision.
       "Stir-fry the chicken feet with the sauce.",
       "Add vegetables and finish."
     ],
-    "message": "You can save 14,500 KRW and earn 145,000 points by cooking this at home.",
+    "message": "You can save 14,500 KRW and earn 72,500 points by cooking this at home.",
     "source": "llm"
   }
 }
@@ -253,28 +253,32 @@ If the LLM call fails, return the same response shape with source fallback.
     "eatingOutPrice": 23000,
     "homeCookingCost": 9000,
     "savingAmount": 14000,
-    "rewardPoint": 140000,
+    "rewardPoint": 70000,
     "ingredients": [
       {
-        "name": "Main ingredient",
-        "estimatedPrice": 5000
+        "name": "닭발",
+        "estimatedPrice": 5500
       },
       {
-        "name": "Sauce and seasoning",
-        "estimatedPrice": 2500
-      },
-      {
-        "name": "Vegetables",
+        "name": "고추장과 고춧가루",
         "estimatedPrice": 1500
+      },
+      {
+        "name": "간장, 다진 마늘, 올리고당",
+        "estimatedPrice": 1800
+      },
+      {
+        "name": "양파, 대파, 청양고추",
+        "estimatedPrice": 2200
       }
     ],
     "recipe": [
-      "Prepare the ingredients.",
-      "Mix the sauce.",
-      "Cook everything in a pan.",
-      "Serve and enjoy."
+      "닭발을 깨끗이 씻고 끓는 물에 5~10분 정도 데친 뒤, 찬물에 헹궈 잡내와 불순물을 제거한다.",
+      "고추장, 고춧가루, 간장, 다진 마늘, 설탕 또는 올리고당, 후추를 섞어 매콤한 양념장을 만든다.",
+      "팬에 닭발과 양념장을 넣고 물을 조금 부은 뒤 중불에서 졸이듯이 볶는다. 양념이 잘 배도록 10~15분 정도 익힌다.",
+      "양파, 대파, 청양고추 등을 넣고 한 번 더 볶은 뒤, 참기름과 깨를 뿌려 마무리한다."
     ],
-    "message": "Cooking this at home can help you save money and still enjoy the meal.",
+    "message": "닭발 외식 대신 집에서 매콤한 닭발을 만들면 지출을 줄이고 포인트도 챙길 수 있어요.",
     "source": "fallback"
   }
 }
@@ -282,7 +286,7 @@ If the LLM call fails, return the same response shape with source fallback.
 ### Calculation Rules
 
 savingAmount = eatingOutPrice - homeCookingCost
-rewardPoint = savingAmount * 10
+rewardPoint = savingAmount * 5
 
 ### Important Rules
 
@@ -305,7 +309,7 @@ Saves the user's final decision and updates user stats.
   "eatingOutPrice": 23000,
   "homeCookingCost": 8500,
   "savingAmount": 14500,
-  "rewardPoint": 145000,
+  "rewardPoint": 72500,
   "choice": "cook",
   "message": "You can save 14,500 KRW."
 }
@@ -322,16 +326,16 @@ Saves the user's final decision and updates user stats.
       "eatingOutPrice": 23000,
       "homeCookingCost": 8500,
       "savingAmount": 14500,
-      "rewardPoint": 145000,
+      "rewardPoint": 72500,
       "choice": "cook",
       "createdAt": "2026-05-08T00:00:00"
     },
     "userStats": {
       "totalSavedAmount": 14500,
-      "totalRewardPoint": 145000,
+      "totalRewardPoint": 72500,
       "virtualBalance": 14500
     },
-    "characterState": "rich_getting_better"
+    "characterState": "neutral"
   }
 }
 
@@ -356,7 +360,7 @@ Saves the user's final decision and updates user stats.
       "totalRewardPoint": 0,
       "virtualBalance": -23000
     },
-    "characterState": "poor_getting_worse"
+    "characterState": "neutral"
   }
 }
 
@@ -380,7 +384,7 @@ totalSavedAmount is unchanged
 Character state is based on cumulative earned reward points, not the currently
 spendable reward point balance. Item purchases do not downgrade the character.
 
-cumulativeRewardPoint = totalSavedAmount * 10
+cumulativeRewardPoint = totalSavedAmount * 5
 
 cumulativeRewardPoint < 300000       -> neutral
 cumulativeRewardPoint >= 300000      -> rich_getting_better
@@ -409,7 +413,7 @@ user_id: string
       "eatingOutPrice": 23000,
       "homeCookingCost": 8500,
       "savingAmount": 14500,
-      "rewardPoint": 145000,
+      "rewardPoint": 72500,
       "choice": "cook",
       "message": "You can save 14,500 KRW.",
       "createdAt": "2026-05-08T00:00:00"
@@ -458,7 +462,7 @@ Returns top users ordered by total saved amount.
       "userId": "user_uuid_1",
       "nickname": "savingKing",
       "totalSavedAmount": 240000,
-      "totalRewardPoint": 2400000,
+      "totalRewardPoint": 1200000,
       "virtualBalance": 240000
     },
     {
@@ -466,7 +470,7 @@ Returns top users ordered by total saved amount.
       "userId": "user_uuid_2",
       "nickname": "jinhyung",
       "totalSavedAmount": 145000,
-      "totalRewardPoint": 1450000,
+      "totalRewardPoint": 725000,
       "virtualBalance": 145000
     }
   ]
@@ -493,7 +497,7 @@ Returns all available flex shop items.
     {
       "id": "item_uuid_1",
       "name": "Luxury Watch",
-      "price": 300000,
+      "price": 150000,
       "emoji": "⌚",
       "category": "fashion",
       "description": "A shiny watch for safe in-app flex."
@@ -501,7 +505,7 @@ Returns all available flex shop items.
     {
       "id": "item_uuid_2",
       "name": "Sports Car",
-      "price": 3000000,
+      "price": 1500000,
       "emoji": "🏎️",
       "category": "vehicle",
       "description": "A dream car bought with saved money points."
@@ -509,7 +513,7 @@ Returns all available flex shop items.
     {
       "id": "item_uuid_3",
       "name": "Penthouse",
-      "price": 10000000,
+      "price": 5000000,
       "emoji": "🏙️",
       "category": "real_estate",
       "description": "A luxury home for the ultimate flex."
@@ -546,14 +550,14 @@ item_id: string
     "purchasedItem": {
       "id": "item_uuid",
       "name": "Luxury Watch",
-      "price": 300000,
+      "price": 150000,
       "emoji": "⌚",
       "category": "fashion",
       "description": "A shiny watch for safe in-app flex."
     },
     "userStats": {
       "totalSavedAmount": 145000,
-      "totalRewardPoint": 1150000,
+      "totalRewardPoint": 575000,
       "virtualBalance": 145000
     }
   }
@@ -604,7 +608,7 @@ user_id: string
     {
       "id": "item_uuid_1",
       "name": "Luxury Watch",
-      "price": 300000,
+      "price": 150000,
       "emoji": "⌚",
       "category": "fashion",
       "description": "A shiny watch for safe in-app flex.",
@@ -613,7 +617,7 @@ user_id: string
     {
       "id": "item_uuid_2",
       "name": "Sports Car",
-      "price": 3000000,
+      "price": 1500000,
       "emoji": "🏎️",
       "category": "vehicle",
       "description": "A dream car bought with saved money points.",

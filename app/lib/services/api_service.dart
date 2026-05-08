@@ -68,7 +68,7 @@ class ApiService {
     const FlexItem(
       id: 'item_uuid_1',
       name: '럭셔리 핸드백',
-      price: 300000,
+      price: 150000,
       emoji: '👜',
       category: 'fashion',
       description: '현실 소비 대신 앱 안에서만 드는 프리미엄 백.',
@@ -76,7 +76,7 @@ class ApiService {
     const FlexItem(
       id: 'item_uuid_2',
       name: '명품 시계',
-      price: 800000,
+      price: 400000,
       emoji: '⌚',
       category: 'timepiece',
       description: '절약 습관을 더 고급스럽게 보여주는 시계.',
@@ -84,7 +84,7 @@ class ApiService {
     const FlexItem(
       id: 'item_uuid_3',
       name: '엘리트 슈퍼카',
-      price: 3000000,
+      price: 1500000,
       emoji: '🏎️',
       category: 'vehicle',
       description: '과소비 없이 앱 안에서만 달리는 슈퍼카.',
@@ -92,7 +92,7 @@ class ApiService {
     const FlexItem(
       id: 'item_uuid_4',
       name: '프레스티지 빌라',
-      price: 10000000,
+      price: 5000000,
       emoji: '🏙️',
       category: 'real_estate',
       description: '절약으로 쌓은 포인트가 만든 앱 속 라이프스타일.',
@@ -150,6 +150,9 @@ class ApiService {
   }
 
   Future<UserStats> getStats(String userId, String nickname) async {
+    if (_isMockUser(userId)) {
+      return _ensureMockStats(userId, nickname);
+    }
     try {
       final json = await _request('GET', '/users/$userId/stats');
       final stats = UserStats.fromJson(json['data'] as Map<String, dynamic>);
@@ -183,6 +186,14 @@ class ApiService {
     required String choice,
     required String nickname,
   }) async {
+    if (_isMockUser(userId)) {
+      return _mockSaveDecision(
+        userId: userId,
+        result: result,
+        choice: choice,
+        nickname: nickname,
+      );
+    }
     final request = {
       'userId': userId,
       'menuName': result.menuName,
@@ -223,6 +234,9 @@ class ApiService {
   }
 
   Future<List<ConsumptionRecord>> getRecords(String userId) async {
+    if (_isMockUser(userId)) {
+      return List<ConsumptionRecord>.from(_mockRecords);
+    }
     try {
       final json = await _request('GET', '/users/$userId/records');
       return (json['data'] as List<dynamic>)
@@ -237,6 +251,9 @@ class ApiService {
   }
 
   Future<List<RankingUser>> getRankings(String userId, String nickname) async {
+    if (_isMockUser(userId)) {
+      return _mockRankings(userId, nickname);
+    }
     try {
       final json = await _request('GET', '/rankings');
       return (json['data'] as List<dynamic>)
@@ -244,50 +261,7 @@ class ApiService {
           .toList();
     } catch (error) {
       if (!_shouldUseMockFallback(error)) rethrow;
-      final stats = _ensureMockStats(userId, nickname);
-      final users =
-          [
-            const RankingUser(
-              rank: 1,
-              userId: 'saving_king',
-              nickname: '절약왕',
-              totalSavedAmount: 240000,
-              totalRewardPoint: 7200000,
-              virtualBalance: 240000,
-            ),
-            RankingUser(
-              rank: 2,
-              userId: userId,
-              nickname: nickname,
-              totalSavedAmount: stats.totalSavedAmount,
-              totalRewardPoint: stats.totalRewardPoint,
-              virtualBalance: stats.virtualBalance,
-            ),
-            const RankingUser(
-              rank: 3,
-              userId: 'steady_cook',
-              nickname: '집밥고수',
-              totalSavedAmount: 86000,
-              totalRewardPoint: 2580000,
-              virtualBalance: 86000,
-            ),
-          ]..sort((a, b) {
-            final saved = b.totalSavedAmount.compareTo(a.totalSavedAmount);
-            if (saved != 0) return saved;
-            return b.totalRewardPoint.compareTo(a.totalRewardPoint);
-          });
-
-      return [
-        for (var i = 0; i < users.length; i++)
-          RankingUser(
-            rank: i + 1,
-            userId: users[i].userId,
-            nickname: users[i].nickname,
-            totalSavedAmount: users[i].totalSavedAmount,
-            totalRewardPoint: users[i].totalRewardPoint,
-            virtualBalance: users[i].virtualBalance,
-          ),
-      ];
+      return _mockRankings(userId, nickname);
     }
   }
 
@@ -304,6 +278,9 @@ class ApiService {
   }
 
   Future<List<PurchasedItem>> getOwnedItems(String userId) async {
+    if (_isMockUser(userId)) {
+      return List<PurchasedItem>.from(_mockOwnedItems);
+    }
     try {
       final json = await _request('GET', '/users/$userId/items');
       return (json['data'] as List<dynamic>)
@@ -320,6 +297,9 @@ class ApiService {
     required String nickname,
     required FlexItem item,
   }) async {
+    if (_isMockUser(userId)) {
+      return _mockPurchase(userId: userId, nickname: nickname, item: item);
+    }
     try {
       final json = await _request('POST', '/flex-items/${item.id}/purchase', {
         'userId': userId,
@@ -391,6 +371,57 @@ class ApiService {
     return error is TimeoutException || error is http.ClientException;
   }
 
+  bool _isMockUser(String userId) {
+    return userId.startsWith('mock_user_');
+  }
+
+  List<RankingUser> _mockRankings(String userId, String nickname) {
+    final stats = _ensureMockStats(userId, nickname);
+    final users =
+        [
+          const RankingUser(
+            rank: 1,
+            userId: 'saving_king',
+            nickname: '절약왕',
+            totalSavedAmount: 240000,
+            totalRewardPoint: 1200000,
+            virtualBalance: 240000,
+          ),
+          RankingUser(
+            rank: 2,
+            userId: userId,
+            nickname: nickname,
+            totalSavedAmount: stats.totalSavedAmount,
+            totalRewardPoint: stats.totalRewardPoint,
+            virtualBalance: stats.virtualBalance,
+          ),
+          const RankingUser(
+            rank: 3,
+            userId: 'steady_cook',
+            nickname: '집밥고수',
+            totalSavedAmount: 86000,
+            totalRewardPoint: 430000,
+            virtualBalance: 86000,
+          ),
+        ]..sort((a, b) {
+          final saved = b.totalSavedAmount.compareTo(a.totalSavedAmount);
+          if (saved != 0) return saved;
+          return b.totalRewardPoint.compareTo(a.totalRewardPoint);
+        });
+
+    return [
+      for (var i = 0; i < users.length; i++)
+        RankingUser(
+          rank: i + 1,
+          userId: users[i].userId,
+          nickname: users[i].nickname,
+          totalSavedAmount: users[i].totalSavedAmount,
+          totalRewardPoint: users[i].totalRewardPoint,
+          virtualBalance: users[i].virtualBalance,
+        ),
+    ];
+  }
+
   UserStats _statsFromUser(User user) {
     return UserStats(
       userId: user.id,
@@ -434,7 +465,7 @@ class ApiService {
   CompareResult _mockCompare(String menuName, int eatingOutPrice) {
     final homeCost = min(max((eatingOutPrice * .42).round(), 3500), 18000);
     final saving = eatingOutPrice - homeCost;
-    final reward = max(saving, 0) * 10;
+    final reward = max(saving, 0) * 5;
     return CompareResult(
       menuName: menuName,
       eatingOutPrice: eatingOutPrice,
@@ -442,22 +473,26 @@ class ApiService {
       savingAmount: saving,
       rewardPoint: reward,
       ingredients: [
-        Ingredient(name: menuName, estimatedPrice: (homeCost * .55).round()),
-        Ingredient(name: '소스와 양념', estimatedPrice: (homeCost * .25).round()),
+        Ingredient(name: '닭발', estimatedPrice: (homeCost * .50).round()),
+        Ingredient(name: '고추장과 고춧가루', estimatedPrice: (homeCost * .15).round()),
         Ingredient(
-          name: '채소',
-          estimatedPrice: homeCost - (homeCost * .8).round(),
+          name: '간장, 다진 마늘, 올리고당',
+          estimatedPrice: (homeCost * .17).round(),
+        ),
+        Ingredient(
+          name: '양파, 대파, 청양고추',
+          estimatedPrice: homeCost - (homeCost * .82).round(),
         ),
       ],
       recipe: const [
-        '재료를 먹기 좋게 손질해요.',
-        '소스와 양념을 섞어 입맛에 맞게 간을 맞춰요.',
-        '팬에 재료를 넣고 골고루 익혀요.',
-        '완성한 뒤 포인트가 쌓이는 기분까지 즐겨요.',
+        '닭발을 깨끗이 씻고 끓는 물에 5~10분 정도 데친 뒤, 찬물에 헹궈 잡내와 불순물을 제거한다.',
+        '고추장, 고춧가루, 간장, 다진 마늘, 설탕 또는 올리고당, 후추를 섞어 매콤한 양념장을 만든다.',
+        '팬에 닭발과 양념장을 넣고 물을 조금 부은 뒤 중불에서 졸이듯이 볶는다. 양념이 잘 배도록 10~15분 정도 익힌다.',
+        '양파, 대파, 청양고추 등을 넣고 한 번 더 볶은 뒤, 참기름과 깨를 뿌려 마무리한다.',
       ],
       message: saving > 0
-          ? '집에서 해먹으면 맛은 챙기고 지출은 줄일 수 있어요.'
-          : '가격 차이가 크지 않아요. 시간과 기분까지 고려해서 선택해요.',
+          ? '$menuName 외식 대신 집에서 매콤한 닭발을 만들면 지출을 줄이고 포인트도 챙길 수 있어요.'
+          : '가격 차이가 크지 않아요. 그래도 닭발 재료를 준비해두면 다음 지출을 줄일 수 있어요.',
       source: 'fallback',
     );
   }
@@ -502,7 +537,7 @@ class ApiService {
     return DecisionResponse(
       record: record,
       userStats: nextStats,
-      characterState: _characterState(nextStats.totalSavedAmount * 10),
+      characterState: _characterState(nextStats.totalSavedAmount * 5),
     );
   }
 

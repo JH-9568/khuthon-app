@@ -12,7 +12,7 @@ void main() {
     await tester.pumpWidget(const FlexApp());
     await tester.pump();
 
-    expect(find.text('Flex'), findsOneWidget);
+    expect(find.text('당신의 이름은 무엇인가요?'), findsOneWidget);
     expect(find.text('시작하기'), findsOneWidget);
   });
 }

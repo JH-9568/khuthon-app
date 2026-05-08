@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/flex_item.dart';
 import '../theme/app_theme.dart';
+import 'flex_design_widgets.dart';
 
 class FlexItemCard extends StatelessWidget {
   const FlexItemCard({
@@ -120,6 +121,7 @@ class _PremiumPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final assetPath = spec.assetPath;
     return AspectRatio(
       aspectRatio: 16 / 10,
       child: ClipRRect(
@@ -151,6 +153,18 @@ class _PremiumPreview extends StatelessWidget {
                   color: spec.primary.withValues(alpha: .2),
                 ),
               ),
+              if (assetPath != null)
+                Positioned.fill(
+                  child: AssetOrPlaceholder(
+                    assetPath: assetPath,
+                    fit: BoxFit.cover,
+                    borderRadius: BorderRadius.zero,
+                    icon: Icons.shopping_bag_rounded,
+                    background: Colors.transparent,
+                  ),
+                )
+              else
+                Center(child: _RewardObject(spec: spec)),
               Positioned(
                 left: 0,
                 top: 0,
@@ -195,7 +209,6 @@ class _PremiumPreview extends StatelessWidget {
                   ),
                 ),
               ),
-              Center(child: _RewardObject(spec: spec)),
               if (owned)
                 Positioned(
                   right: 0,
@@ -777,6 +790,7 @@ class _ItemSpec {
     required this.primary,
     required this.dark,
     required this.shadow,
+    this.assetPath,
   });
 
   final _ItemKind kind;
@@ -786,9 +800,46 @@ class _ItemSpec {
   final Color primary;
   final Color dark;
   final Color shadow;
+  final String? assetPath;
 
   factory _ItemSpec.fromItem(FlexItem item) {
     final key = '${item.name} ${item.category}'.toLowerCase();
+    if (item.id == 'leaf_cap' || item.id == 'basic_cap') {
+      return const _ItemSpec(
+        kind: _ItemKind.handbag,
+        label: 'FASHION',
+        badge: 'NEW ITEM',
+        background: [Color(0xFFFFF4EA), Color(0xFFE9BF8E)],
+        primary: Color(0xFFC7864E),
+        dark: Color(0xFF6A3F1E),
+        shadow: Color(0xFFC7864E),
+        assetPath: 'assets/items/shop_final1.png',
+      );
+    }
+    if (item.id == 'ribbon_hat' || item.id == 'leaf_band') {
+      return const _ItemSpec(
+        kind: _ItemKind.watch,
+        label: 'ACCESSORY',
+        badge: 'POPULAR',
+        background: [Color(0xFFFFF8DD), Color(0xFFFFDF83)],
+        primary: Color(0xFFFFC94A),
+        dark: Color(0xFF7A5600),
+        shadow: Color(0xFFFFB800),
+        assetPath: 'assets/items/shop_final2.png',
+      );
+    }
+    if (item.id == 'green_beanie') {
+      return const _ItemSpec(
+        kind: _ItemKind.villa,
+        label: 'ROOM',
+        badge: 'FLEX',
+        background: [Color(0xFFEAF7FF), Color(0xFFB7DDF3)],
+        primary: Color(0xFF8AC8E8),
+        dark: Color(0xFF25576E),
+        shadow: Color(0xFF25576E),
+        assetPath: 'assets/items/shop_final3.png',
+      );
+    }
     if (key.contains('handbag') || key.contains('핸드백')) {
       return const _ItemSpec(
         kind: _ItemKind.handbag,
@@ -798,6 +849,7 @@ class _ItemSpec {
         primary: Color(0xFFC7864E),
         dark: Color(0xFF6A3F1E),
         shadow: Color(0xFFC7864E),
+        assetPath: 'assets/items/shop_final1.png',
       );
     }
     if (key.contains('watch') || key.contains('시계')) {
@@ -809,6 +861,7 @@ class _ItemSpec {
         primary: Color(0xFFFFC94A),
         dark: Color(0xFF7A5600),
         shadow: Color(0xFFFFB800),
+        assetPath: 'assets/items/shop_final2.png',
       );
     }
     if (key.contains('villa') || key.contains('빌라')) {
@@ -820,6 +873,7 @@ class _ItemSpec {
         primary: Color(0xFF8AC8E8),
         dark: Color(0xFF25576E),
         shadow: Color(0xFF25576E),
+        assetPath: 'assets/items/shop_final3.png',
       );
     }
     if (key.contains('penthouse') || key.contains('펜트')) {
@@ -831,6 +885,7 @@ class _ItemSpec {
         primary: Color(0xFF8AC8E8),
         dark: Color(0xFF25576E),
         shadow: Color(0xFF25576E),
+        assetPath: 'assets/items/shop_final3.png',
       );
     }
     if (key.contains('suit') || key.contains('수트')) {

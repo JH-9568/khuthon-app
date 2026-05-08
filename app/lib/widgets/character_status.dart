@@ -14,7 +14,7 @@ class CharacterStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cumulativePoint = stats.totalSavedAmount * 10;
+    final cumulativePoint = stats.totalSavedAmount * 5;
     final state = _state(cumulativePoint);
     return Container(
       width: double.infinity,

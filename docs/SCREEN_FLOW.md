@@ -106,7 +106,7 @@ Backend:
 - GET /api/users/{user_id}/items
 
 Character state rules:
-- cumulativeRewardPoint = totalSavedAmount * 10
+- cumulativeRewardPoint = totalSavedAmount * 5
 - cumulativeRewardPoint < 300000: neutral
 - cumulativeRewardPoint >= 300000: rich_getting_better
 - cumulativeRewardPoint >= 600000: poor_getting_worse

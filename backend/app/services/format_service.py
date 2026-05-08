@@ -39,8 +39,12 @@ def flex_item_to_api(row: dict[str, Any]) -> dict[str, Any]:
     return {
         "id": row["id"],
         "name": row["name"],
-        "price": row["price"],
+        "price": flex_item_price(row),
         "emoji": row["emoji"],
         "category": row["category"],
         "description": row["description"],
     }
+
+
+def flex_item_price(row: dict[str, Any]) -> int:
+    return int(row["price"] * 0.5)

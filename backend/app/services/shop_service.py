@@ -1,7 +1,7 @@
 from typing import Any
 
 from app.database import supabase
-from app.services.format_service import flex_item_to_api, user_stats_to_api
+from app.services.format_service import flex_item_price, flex_item_to_api, user_stats_to_api
 
 
 async def get_flex_items() -> list[dict[str, Any]]:
@@ -14,7 +14,7 @@ async def purchase_item(item_id: str, user_id: str) -> dict[str, Any]:
     item = _get_one("flex_items", "id", item_id, "Item not found.")
     _ensure_not_owned(user_id, item_id)
 
-    if user.get("total_reward_point", 0) < item["price"]:
+    if user.get("total_reward_point", 0) < flex_item_price(item):
         raise ValueError("Not enough reward points.")
 
     updated_user = _spend_points(user, item)
@@ -61,7 +61,7 @@ def _ensure_not_owned(user_id: str, item_id: str) -> None:
 
 
 def _spend_points(user: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
-    updated_points = user.get("total_reward_point", 0) - item["price"]
+    updated_points = user.get("total_reward_point", 0) - flex_item_price(item)
     result = (
         supabase.table("users")
         .update({"total_reward_point": updated_points})

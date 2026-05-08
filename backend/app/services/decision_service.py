@@ -12,7 +12,11 @@ async def save_decision(decision: DecisionRequest) -> dict[str, Any]:
         raise ValueError("User not found.")
 
     current = user.data[0]
-    record_reward = decision.rewardPoint if decision.choice == "cook" else 0
+    record_reward = (
+        max(decision.savingAmount, 0) * 5
+        if decision.choice == "cook"
+        else 0
+    )
     record = _insert_record(decision, record_reward)
     updated_user = _update_user_stats(current, decision, record_reward)
 
@@ -20,7 +24,7 @@ async def save_decision(decision: DecisionRequest) -> dict[str, Any]:
         "record": record_to_api(record),
         "userStats": user_stats_to_api(updated_user),
         "characterState": get_character_state(
-            updated_user.get("total_saved_amount", 0) * 10
+            updated_user.get("total_saved_amount", 0) * 5
         ),
     }
 

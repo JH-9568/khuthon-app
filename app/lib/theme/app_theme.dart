@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const nearBlack = Color(0xFF0E0F0C);
-  static const darkGreen = Color(0xFF163300);
-  static const wiseGreen = Color(0xFF9FE870);
-  static const lightMint = Color(0xFFE2F6D5);
-  static const surface = Color(0xFFF7F8F3);
-  static const lightSurface = Color(0xFFE8EBE6);
-  static const warmDark = Color(0xFF454745);
-  static const gray = Color(0xFF868685);
-  static const positive = Color(0xFF054D28);
-  static const danger = Color(0xFFD03238);
-  static const warning = Color(0xFFFFD11A);
+  static const nearBlack = Color(0xFF333333);
+  static const darkGreen = Color(0xFF0D572C);
+  static const primaryGreen = Color(0xFF6B9E4D);
+  static const lightGreen = Color(0xFFA0D468);
+  static const pastelGreen = Color(0xFFD9EDC8);
+  static const cream = Color(0xFFF8F5EB);
+  static const surface = Color(0xFFFFFCF6);
+  static const lightSurface = Color(0xFFF0F2EA);
+  static const warmDark = Color(0xFF666666);
+  static const gray = Color(0xFF8A8F91);
+  static const mutedGray = Color(0xFF7E878A);
+  static const positive = Color(0xFF197A34);
+  static const danger = Color(0xFFFF6B6B);
+  static const warning = Color(0xFFFFD700);
+  static const wiseGreen = primaryGreen;
+  static const lightMint = pastelGreen;
 }
 
 class AppTheme {
@@ -45,23 +50,23 @@ class AppTheme {
       textTheme: const TextTheme(
         displayLarge: TextStyle(
           fontFamilyFallback: _gameFontFallback,
-          fontSize: 48,
+          fontSize: 54,
           fontWeight: FontWeight.w900,
-          height: .9,
-          color: AppColors.nearBlack,
+          height: .92,
+          color: AppColors.darkGreen,
         ),
         headlineMedium: TextStyle(
           fontFamilyFallback: _gameFontFallback,
-          fontSize: 29,
+          fontSize: 30,
           fontWeight: FontWeight.w900,
-          height: .96,
+          height: 1.05,
           color: AppColors.nearBlack,
         ),
         titleLarge: TextStyle(
           fontFamilyFallback: _gameFontFallback,
-          fontSize: 22,
+          fontSize: 23,
           fontWeight: FontWeight.w900,
-          height: 1.1,
+          height: 1.12,
           color: AppColors.nearBlack,
         ),
         titleMedium: TextStyle(
@@ -73,21 +78,21 @@ class AppTheme {
         ),
         bodyLarge: TextStyle(
           fontFamilyFallback: _gameFontFallback,
-          fontSize: 15,
+          fontSize: 16,
           fontWeight: FontWeight.w600,
           height: 1.42,
           color: AppColors.nearBlack,
         ),
         bodyMedium: TextStyle(
           fontFamilyFallback: _gameFontFallback,
-          fontSize: 13,
+          fontSize: 14,
           fontWeight: FontWeight.w500,
           height: 1.45,
           color: AppColors.warmDark,
         ),
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.surface,
+        backgroundColor: Colors.transparent,
         foregroundColor: AppColors.nearBlack,
         elevation: 0,
         centerTitle: false,
@@ -101,14 +106,16 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.wiseGreen,
-          foregroundColor: AppColors.darkGreen,
+          backgroundColor: AppColors.primaryGreen,
+          foregroundColor: Colors.white,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
-          shape: const StadiumBorder(),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           textStyle: const TextStyle(
             fontFamilyFallback: _gameFontFallback,
-            fontSize: 15,
+            fontSize: 18,
             fontWeight: FontWeight.w900,
           ),
         ),
@@ -118,7 +125,9 @@ class AppTheme {
           foregroundColor: AppColors.nearBlack,
           side: const BorderSide(color: Color(0x1F0E0F0C)),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          shape: const StadiumBorder(),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           textStyle: const TextStyle(
             fontFamilyFallback: _gameFontFallback,
             fontSize: 14,
@@ -134,16 +143,19 @@ class AppTheme {
           vertical: 16,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(color: Color(0x1F0E0F0C)),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Color(0xFFD8E4D1), width: 1.4),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(color: Color(0x1F0E0F0C)),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Color(0xFFD8E4D1), width: 1.4),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(color: AppColors.nearBlack, width: 1.2),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: AppColors.primaryGreen,
+            width: 1.6,
+          ),
         ),
       ),
     );
