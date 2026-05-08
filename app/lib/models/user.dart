@@ -49,7 +49,7 @@ class UserStats {
   factory UserStats.fromJson(Map<String, dynamic> json) {
     return UserStats(
       userId: json['userId'] as String? ?? json['id'] as String? ?? 'mock_user',
-      nickname: json['nickname'] as String? ?? 'Saver',
+      nickname: json['nickname'] as String? ?? '절약러',
       totalSavedAmount: (json['totalSavedAmount'] as num).round(),
       totalRewardPoint: (json['totalRewardPoint'] as num).round(),
       virtualBalance: (json['virtualBalance'] as num).round(),

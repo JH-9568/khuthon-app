@@ -66,7 +66,7 @@ class _FlexShopScreenState extends State<FlexShopScreen> {
       setState(() {
         _stats = response.userStats;
         _owned = owned;
-        _message = '${response.purchasedItem.name} added to your safe flex.';
+        _message = '${response.purchasedItem.name} 아이템을 보유했어요.';
       });
     } on ApiException catch (error) {
       setState(() => _message = error.message);
@@ -78,14 +78,14 @@ class _FlexShopScreenState extends State<FlexShopScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Flex shop')),
+      appBar: AppBar(title: const Text('플렉스샵')),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               padding: const EdgeInsets.all(18),
               children: [
                 Text(
-                  'Safe flex only',
+                  '앱 안에서만 안전하게 플렉스',
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 const SizedBox(height: 14),
@@ -99,7 +99,7 @@ class _FlexShopScreenState extends State<FlexShopScreen> {
                     children: [
                       const Expanded(
                         child: Text(
-                          'Reward point balance',
+                          '보유 포인트',
                           style: TextStyle(
                             color: Colors.white70,
                             fontWeight: FontWeight.w800,
@@ -120,7 +120,7 @@ class _FlexShopScreenState extends State<FlexShopScreen> {
                 if (_owned.isNotEmpty) ...[
                   const SizedBox(height: 16),
                   Text(
-                    'Owned items',
+                    '보유 아이템',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 8),

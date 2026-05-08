@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Text('Flex', style: Theme.of(context).textTheme.displayLarge),
               const SizedBox(height: 14),
               const Text(
-                'Compare the craving. Save the cash. Flex safely with points.',
+                '먹고 싶은 마음은 비교하고, 아낀 돈은 포인트로 안전하게 플렉스하세요.',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -65,8 +65,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 textInputAction: TextInputAction.done,
                 onSubmitted: (_) => _loading ? null : _login(),
                 decoration: const InputDecoration(
-                  labelText: 'Nickname',
-                  hintText: 'savingKing',
+                  labelText: '닉네임',
+                  hintText: '절약왕',
                 ),
               ),
               if (_error != null) ...[
@@ -90,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 18,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : const Text('Start'),
+                      : const Text('시작하기'),
                 ),
               ),
               const Spacer(),

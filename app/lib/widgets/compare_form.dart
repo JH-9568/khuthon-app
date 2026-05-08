@@ -48,15 +48,12 @@ class _CompareFormState extends State<CompareForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Compare a craving',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text('먹고 싶은 메뉴 비교하기', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 14),
           TextField(
             controller: _menuController,
             decoration: const InputDecoration(
-              labelText: 'Food name',
+              labelText: '메뉴 이름',
               hintText: '닭발',
             ),
           ),
@@ -66,9 +63,9 @@ class _CompareFormState extends State<CompareForm> {
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: const InputDecoration(
-              labelText: 'Eating-out price',
+              labelText: '외식 가격',
               hintText: '23000',
-              suffixText: 'KRW',
+              suffixText: '원',
             ),
           ),
           if (_error != null) ...[
@@ -92,7 +89,7 @@ class _CompareFormState extends State<CompareForm> {
                       height: 18,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text('Compare'),
+                  : const Text('비교하기'),
             ),
           ),
         ],

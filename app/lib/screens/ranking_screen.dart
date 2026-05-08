@@ -32,7 +32,7 @@ class _RankingScreenState extends State<RankingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Ranking')),
+      appBar: AppBar(title: const Text('랭킹')),
       body: FutureBuilder<List<RankingUser>>(
         future: _future,
         builder: (context, snapshot) {
@@ -43,13 +43,10 @@ class _RankingScreenState extends State<RankingScreen> {
           return ListView(
             padding: const EdgeInsets.all(18),
             children: [
-              Text(
-                'Savings league',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
+              Text('절약 랭킹', style: Theme.of(context).textTheme.headlineMedium),
               const SizedBox(height: 8),
               Text(
-                'Ranked by total saved amount, then reward points.',
+                '총 절약 금액이 높은 순서로 보여줘요. 동점이면 포인트가 높은 사용자가 앞서요.',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 18),

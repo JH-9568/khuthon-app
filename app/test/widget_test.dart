@@ -13,6 +13,6 @@ void main() {
     await tester.pump();
 
     expect(find.text('Flex'), findsOneWidget);
-    expect(find.text('Start'), findsOneWidget);
+    expect(find.text('시작하기'), findsOneWidget);
   });
 }

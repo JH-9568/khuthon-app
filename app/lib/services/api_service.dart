@@ -66,27 +66,43 @@ class ApiService {
   static final List<FlexItem> _shopItems = [
     const FlexItem(
       id: 'item_uuid_1',
-      name: 'Luxury Watch',
+      name: '명품 시계',
       price: 300000,
       emoji: '⌚',
       category: 'fashion',
-      description: 'A shiny watch for safe in-app flex.',
+      description: '앱 안에서만 빛나는 안전한 플렉스 시계.',
     ),
     const FlexItem(
       id: 'item_uuid_2',
-      name: 'Sports Car',
+      name: '스포츠카',
       price: 3000000,
       emoji: '🏎️',
       category: 'vehicle',
-      description: 'A dream car bought with saved money points.',
+      description: '아낀 돈 포인트로 사는 꿈의 차.',
     ),
     const FlexItem(
       id: 'item_uuid_3',
-      name: 'Penthouse',
+      name: '펜트하우스',
       price: 10000000,
       emoji: '🏙️',
       category: 'real_estate',
-      description: 'A luxury home for the ultimate flex.',
+      description: '최종 플렉스를 위한 럭셔리 공간.',
+    ),
+    const FlexItem(
+      id: 'item_uuid_4',
+      name: '디자이너 수트',
+      price: 1500000,
+      emoji: '🤵',
+      category: 'fashion',
+      description: '중요한 날을 위한 프리미엄 수트.',
+    ),
+    const FlexItem(
+      id: 'item_uuid_5',
+      name: '슈퍼카',
+      price: 6000000,
+      emoji: '🏎️',
+      category: 'vehicle',
+      description: '절약 포인트로만 가능한 강렬한 드림카.',
     ),
   ];
 
@@ -232,7 +248,7 @@ class ApiService {
             const RankingUser(
               rank: 1,
               userId: 'saving_king',
-              nickname: 'savingKing',
+              nickname: '절약왕',
               totalSavedAmount: 240000,
               totalRewardPoint: 7200000,
               virtualBalance: 240000,
@@ -248,7 +264,7 @@ class ApiService {
             const RankingUser(
               rank: 3,
               userId: 'steady_cook',
-              nickname: 'homeChef',
+              nickname: '집밥고수',
               totalSavedAmount: 86000,
               totalRewardPoint: 2580000,
               virtualBalance: 86000,
@@ -409,24 +425,21 @@ class ApiService {
       rewardPoint: reward,
       ingredients: [
         Ingredient(name: menuName, estimatedPrice: (homeCost * .55).round()),
+        Ingredient(name: '소스와 양념', estimatedPrice: (homeCost * .25).round()),
         Ingredient(
-          name: 'Sauce and seasoning',
-          estimatedPrice: (homeCost * .25).round(),
-        ),
-        Ingredient(
-          name: 'Vegetables',
+          name: '채소',
           estimatedPrice: homeCost - (homeCost * .8).round(),
         ),
       ],
       recipe: const [
-        'Prepare the ingredients.',
-        'Mix the sauce and season to taste.',
-        'Cook everything in a pan.',
-        'Serve and enjoy while your points stack up.',
+        '재료를 먹기 좋게 손질해요.',
+        '소스와 양념을 섞어 입맛에 맞게 간을 맞춰요.',
+        '팬에 재료를 넣고 골고루 익혀요.',
+        '완성한 뒤 포인트가 쌓이는 기분까지 즐겨요.',
       ],
       message: saving > 0
-          ? 'Cooking this at home can help you save money and still enjoy the meal.'
-          : 'This one is already close in price. Choose based on time and mood.',
+          ? '집에서 해먹으면 맛은 챙기고 지출은 줄일 수 있어요.'
+          : '가격 차이가 크지 않아요. 시간과 기분까지 고려해서 선택해요.',
       source: 'fallback',
     );
   }
@@ -463,7 +476,7 @@ class ApiService {
       savingAmount: result.savingAmount,
       rewardPoint: earnedPoint,
       choice: choice,
-      message: isCook ? result.message : 'You chose to eat out this time.',
+      message: isCook ? result.message : '이번에는 외식을 선택했어요.',
       createdAt: DateTime.now(),
     );
     _mockRecords.insert(0, record);
@@ -482,10 +495,10 @@ class ApiService {
   }) {
     final current = _ensureMockStats(userId, nickname);
     if (_mockOwnedItems.any((owned) => owned.id == item.id)) {
-      throw const ApiException('Item already purchased.');
+      throw const ApiException('이미 보유한 아이템이에요.');
     }
     if (current.totalRewardPoint < item.price) {
-      throw const ApiException('Not enough reward points.');
+      throw const ApiException('포인트가 부족해요.');
     }
 
     final purchased = PurchasedItem(
