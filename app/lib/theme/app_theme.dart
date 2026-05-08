@@ -15,6 +15,18 @@ class AppColors {
 }
 
 class AppTheme {
+  static const _gameFontFallback = <String>[
+    'Arial Rounded MT Bold',
+    'Apple SD Gothic Neo',
+    'Noto Sans CJK KR',
+    'Roboto',
+    'sans-serif',
+  ];
+
+  static const _logoShadow = <Shadow>[
+    Shadow(color: Color(0x220E0F0C), blurRadius: 0, offset: Offset(0, 2)),
+  ];
+
   static ThemeData get light {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: AppColors.wiseGreen,
@@ -29,40 +41,48 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.surface,
-      fontFamily: 'Inter',
+      fontFamily: 'Arial Rounded MT Bold',
       textTheme: const TextTheme(
         displayLarge: TextStyle(
-          fontSize: 54,
-          fontWeight: FontWeight.w900,
-          height: .88,
-          color: AppColors.nearBlack,
-        ),
-        headlineMedium: TextStyle(
-          fontSize: 34,
+          fontFamilyFallback: _gameFontFallback,
+          fontSize: 48,
           fontWeight: FontWeight.w900,
           height: .9,
           color: AppColors.nearBlack,
         ),
+        headlineMedium: TextStyle(
+          fontFamilyFallback: _gameFontFallback,
+          fontSize: 29,
+          fontWeight: FontWeight.w900,
+          height: .96,
+          color: AppColors.nearBlack,
+        ),
         titleLarge: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
+          fontFamilyFallback: _gameFontFallback,
+          fontSize: 22,
+          fontWeight: FontWeight.w900,
+          height: 1.1,
           color: AppColors.nearBlack,
         ),
         titleMedium: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
+          fontFamilyFallback: _gameFontFallback,
+          fontSize: 17,
+          fontWeight: FontWeight.w900,
+          height: 1.15,
           color: AppColors.nearBlack,
         ),
         bodyLarge: TextStyle(
-          fontSize: 16,
+          fontFamilyFallback: _gameFontFallback,
+          fontSize: 15,
           fontWeight: FontWeight.w600,
-          height: 1.35,
+          height: 1.42,
           color: AppColors.nearBlack,
         ),
         bodyMedium: TextStyle(
-          fontSize: 14,
+          fontFamilyFallback: _gameFontFallback,
+          fontSize: 13,
           fontWeight: FontWeight.w500,
-          height: 1.4,
+          height: 1.45,
           color: AppColors.warmDark,
         ),
       ),
@@ -72,9 +92,11 @@ class AppTheme {
         elevation: 0,
         centerTitle: false,
         titleTextStyle: TextStyle(
-          fontSize: 24,
+          fontFamilyFallback: _gameFontFallback,
+          fontSize: 25,
           fontWeight: FontWeight.w900,
           color: AppColors.nearBlack,
+          shadows: _logoShadow,
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -84,7 +106,11 @@ class AppTheme {
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
           shape: const StadiumBorder(),
-          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+          textStyle: const TextStyle(
+            fontFamilyFallback: _gameFontFallback,
+            fontSize: 15,
+            fontWeight: FontWeight.w900,
+          ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -93,7 +119,11 @@ class AppTheme {
           side: const BorderSide(color: Color(0x1F0E0F0C)),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           shape: const StadiumBorder(),
-          textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
+          textStyle: const TextStyle(
+            fontFamilyFallback: _gameFontFallback,
+            fontSize: 14,
+            fontWeight: FontWeight.w900,
+          ),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -133,12 +163,13 @@ String formatKrw(num value) {
 }
 
 String formatPoint(num value) {
-  final digits = value.round().toString();
+  final sign = value < 0 ? '-' : '';
+  final digits = value.abs().round().toString();
   final buffer = StringBuffer();
   for (var i = 0; i < digits.length; i++) {
     final fromEnd = digits.length - i;
     buffer.write(digits[i]);
     if (fromEnd > 1 && fromEnd % 3 == 1) buffer.write(',');
   }
-  return '${buffer}P';
+  return '$sign${buffer}P';
 }

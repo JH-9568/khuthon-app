@@ -40,7 +40,7 @@ class RecordCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(
-                  cooked ? 'Cooked' : 'Ate out',
+                  cooked ? '집밥 선택' : '외식 선택',
                   style: TextStyle(
                     color: cooked ? AppColors.positive : AppColors.danger,
                     fontSize: 12,
@@ -52,14 +52,14 @@ class RecordCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            '${formatKrw(record.eatingOutPrice)} out vs ${formatKrw(record.homeCookingCost)} home',
+            '외식 ${formatKrw(record.eatingOutPrice)} vs 집밥 ${formatKrw(record.homeCookingCost)}',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 8),
           Text(
             cooked
-                ? 'Saved ${formatKrw(record.savingAmount)} · ${formatPoint(record.rewardPoint)}'
-                : 'Virtual balance -${formatKrw(record.eatingOutPrice)}',
+                ? '${formatKrw(record.savingAmount)} 절약 · ${formatPoint(record.rewardPoint)}'
+                : '가상 잔고 -${formatPoint(record.eatingOutPrice)}',
             style: const TextStyle(
               fontWeight: FontWeight.w900,
               color: AppColors.nearBlack,
