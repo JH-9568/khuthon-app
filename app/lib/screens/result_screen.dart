@@ -35,6 +35,10 @@ class _ResultScreenState extends State<ResultScreen> {
       _error = null;
     });
     try {
+      final previousStats = await widget.api.getStats(
+        widget.userId,
+        widget.nickname,
+      );
       final response = await widget.api.saveDecision(
         userId: widget.userId,
         result: widget.result,
@@ -43,7 +47,13 @@ class _ResultScreenState extends State<ResultScreen> {
       );
       if (!mounted) return;
       if (choice == 'cook') {
-        await _showRewardFeedback(response.userStats);
+        final previousTier = _characterTier(previousStats);
+        final nextTier = _characterTier(response.userStats);
+        if (nextTier > previousTier) {
+          await _showUpgradeFeedback(response.userStats, nextTier);
+        } else {
+          await _showRewardFeedback(response.userStats);
+        }
         if (!mounted) return;
       }
       Navigator.of(context).pop<UserStats>(response.userStats);
@@ -52,6 +62,103 @@ class _ResultScreenState extends State<ResultScreen> {
     } finally {
       if (mounted) setState(() => _saving = false);
     }
+  }
+
+  int _characterTier(UserStats stats) {
+    final cumulativePoint = stats.totalSavedAmount * 10;
+    if (cumulativePoint >= 900000) return 4;
+    if (cumulativePoint >= 600000) return 3;
+    if (cumulativePoint >= 300000) return 2;
+    return 1;
+  }
+
+  Future<void> _showUpgradeFeedback(UserStats stats, int tier) {
+    final cumulativePoint = stats.totalSavedAmount * 10;
+    return showDialog<void>(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(34)),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(34),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [AppColors.nearBlack, Color(0xFF163300)],
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 118,
+                height: 118,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: const RadialGradient(
+                    center: Alignment(-.35, -.45),
+                    colors: [Colors.white, AppColors.wiseGreen],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.wiseGreen.withValues(alpha: .32),
+                      blurRadius: 28,
+                      offset: const Offset(0, 16),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.auto_awesome,
+                  color: AppColors.darkGreen,
+                  size: 58,
+                ),
+              ),
+              const SizedBox(height: 18),
+              Text(
+                'LEVEL $tier UNLOCKED',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: AppColors.wiseGreen,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                '캐릭터 업그레이드',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 29,
+                  fontWeight: FontWeight.w900,
+                  height: .96,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                '누적 ${formatPoint(cumulativePoint)} 달성. 포인트를 써도 이 등급은 유지돼요.',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                  height: 1.35,
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('업그레이드 확인'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _showRewardFeedback(UserStats stats) {

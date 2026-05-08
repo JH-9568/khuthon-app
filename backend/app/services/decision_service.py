@@ -19,7 +19,9 @@ async def save_decision(decision: DecisionRequest) -> dict[str, Any]:
     return {
         "record": record_to_api(record),
         "userStats": user_stats_to_api(updated_user),
-        "characterState": get_character_state(updated_user["virtual_balance"]),
+        "characterState": get_character_state(
+            updated_user.get("total_saved_amount", 0) * 10
+        ),
     }
 
 

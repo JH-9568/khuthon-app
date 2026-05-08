@@ -14,7 +14,8 @@ class CharacterStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = _state(stats.virtualBalance);
+    final cumulativePoint = stats.totalSavedAmount * 10;
+    final state = _state(cumulativePoint);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
@@ -120,39 +121,39 @@ class CharacterStatus extends StatelessWidget {
     );
   }
 
-  _CharacterCopy _state(int balance) {
-    if (balance <= -50000) {
+  _CharacterCopy _state(int cumulativePoint) {
+    if (cumulativePoint >= 900000) {
       return const _CharacterCopy(
         state: 'bankrupt_warning',
-        badge: '위험',
-        title: '주의 모드',
-        message: '빨간 영수증이 붙었어요. 오늘은 플렉스보다 회복이 먼저예요.',
-        surfaceColors: [Color(0xFFFFF1EF), Color(0xFFFFD4D4)],
-        bodyColors: [Color(0xFFFF9A8B), Color(0xFFD03238)],
-        textColor: AppColors.danger,
-        shadowColor: AppColors.danger,
-        mouth: Icons.sentiment_very_dissatisfied,
+        badge: 'LEVEL 4',
+        title: '레전드 플렉서',
+        message: '누적 90만 P를 넘겼어요. 써도 사라지지 않는 최고 등급이에요.',
+        surfaceColors: [Color(0xFFFFF5D6), Color(0xFFFFD11A)],
+        bodyColors: [Color(0xFFFFE17A), Color(0xFFFFC091)],
+        textColor: AppColors.darkGreen,
+        shadowColor: AppColors.warning,
+        mouth: Icons.auto_awesome,
       );
     }
-    if (balance < 0) {
+    if (cumulativePoint >= 600000) {
       return const _CharacterCopy(
         state: 'poor_getting_worse',
-        badge: '누수',
-        title: '지출 누수 발견',
-        message: '주머니가 가벼워졌어요. 다음 선택에서 다시 잔고를 올려봐요.',
-        surfaceColors: [Color(0xFFF3F4F0), Color(0xFFDDE2D8)],
-        bodyColors: [Color(0xFFC6CBC1), Color(0xFF868685)],
-        textColor: AppColors.warmDark,
-        shadowColor: AppColors.gray,
-        mouth: Icons.sentiment_dissatisfied,
+        badge: 'LEVEL 3',
+        title: '프리미엄 세이버',
+        message: '누적 60만 P 달성. 구매로 포인트를 써도 이 캐릭터는 유지돼요.',
+        surfaceColors: [Color(0xFFEAF5FF), Color(0xFFCFE7FF)],
+        bodyColors: [Color(0xFFB7DAFF), Color(0xFF8CC5FF)],
+        textColor: Color(0xFF164A7A),
+        shadowColor: Color(0xFF164A7A),
+        mouth: Icons.diamond,
       );
     }
-    if (balance > 0) {
+    if (cumulativePoint >= 300000) {
       return const _CharacterCopy(
         state: 'rich_getting_better',
-        badge: '성장',
-        title: '점점 부자 되는 중',
-        message: '아낀 금액은 잔고에, 리워드는 포인트로 쌓이고 있어요.',
+        badge: 'LEVEL 2',
+        title: '업그레이드 세이버',
+        message: '누적 30만 P 달성. 아낀 금액이 캐릭터 성장을 만들었어요.',
         surfaceColors: [Color(0xFFF4FFE9), Color(0xFFD9F8C3)],
         bodyColors: [Color(0xFFCDFFAD), AppColors.wiseGreen],
         textColor: AppColors.positive,
@@ -162,9 +163,9 @@ class CharacterStatus extends StatelessWidget {
     }
     return const _CharacterCopy(
       state: 'neutral',
-      badge: '대기',
-      title: '선택 준비 완료',
-      message: '메뉴를 비교하고 다음 선택으로 캐릭터를 성장시켜 보세요.',
+      badge: 'LEVEL 1',
+      title: '루키 세이버',
+      message: '누적 30만 P마다 캐릭터가 업그레이드돼요.',
       surfaceColors: [Colors.white, AppColors.lightMint],
       bodyColors: [Color(0xFFE8EBE6), Color(0xFFE2F6D5)],
       textColor: AppColors.nearBlack,

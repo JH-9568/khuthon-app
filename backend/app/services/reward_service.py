@@ -4,11 +4,11 @@ def calculate_rewards(eating_out_price: int, home_cooking_cost: int) -> dict[str
     return {"savingAmount": saving_amount, "rewardPoint": reward_point}
 
 
-def get_character_state(virtual_balance: int) -> str:
-    if virtual_balance <= -50_000:
+def get_character_state(cumulative_reward_point: int) -> str:
+    if cumulative_reward_point >= 900_000:
         return "bankrupt_warning"
-    if virtual_balance < 0:
+    if cumulative_reward_point >= 600_000:
         return "poor_getting_worse"
-    if virtual_balance == 0:
-        return "neutral"
-    return "rich_getting_better"
+    if cumulative_reward_point >= 300_000:
+        return "rich_getting_better"
+    return "neutral"

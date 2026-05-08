@@ -377,10 +377,15 @@ totalSavedAmount is unchanged
 
 ### Character State Rules
 
-virtualBalance > 0       -> rich_getting_better
-virtualBalance = 0       -> neutral
-virtualBalance < 0       -> poor_getting_worse
-virtualBalance <= -50000 -> bankrupt_warning
+Character state is based on cumulative earned reward points, not the currently
+spendable reward point balance. Item purchases do not downgrade the character.
+
+cumulativeRewardPoint = totalSavedAmount * 10
+
+cumulativeRewardPoint < 300000       -> neutral
+cumulativeRewardPoint >= 300000      -> rich_getting_better
+cumulativeRewardPoint >= 600000      -> poor_getting_worse
+cumulativeRewardPoint >= 900000      -> bankrupt_warning
 
 ---
 

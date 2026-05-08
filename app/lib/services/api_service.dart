@@ -502,7 +502,7 @@ class ApiService {
     return DecisionResponse(
       record: record,
       userStats: nextStats,
-      characterState: _characterState(nextStats.virtualBalance),
+      characterState: _characterState(nextStats.totalSavedAmount * 10),
     );
   }
 
@@ -537,10 +537,10 @@ class ApiService {
     return PurchaseResponse(purchasedItem: item, userStats: nextStats);
   }
 
-  String _characterState(int virtualBalance) {
-    if (virtualBalance <= -50000) return 'bankrupt_warning';
-    if (virtualBalance < 0) return 'poor_getting_worse';
-    if (virtualBalance > 0) return 'rich_getting_better';
+  String _characterState(int cumulativePoint) {
+    if (cumulativePoint >= 900000) return 'bankrupt_warning';
+    if (cumulativePoint >= 600000) return 'poor_getting_worse';
+    if (cumulativePoint >= 300000) return 'rich_getting_better';
     return 'neutral';
   }
 }
