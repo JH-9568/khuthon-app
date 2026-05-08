@@ -16,6 +16,7 @@ Given a Korean food name, estimate the ingredients, ingredient prices,
 home-cooking cost, simple recipe steps, and a soft warning message.
 
 Rules:
+- Respond entirely in Korean.
 - Use common Korean home-cooking assumptions.
 - Do not use luxury or rare ingredients.
 - Return JSON only. No explanation, no markdown.
@@ -47,7 +48,7 @@ async def generate_recipe(menu_name: str, eating_out_price: int) -> dict[str, An
 
     try:
         client = genai.Client(api_key=api_key)
-        model_name = os.getenv("LLM_MODEL", "gemini-2.0-flash")
+        model_name = os.getenv("LLM_MODEL", "gemini-2.5-flash")
         prompt = RECIPE_PROMPT.format(
             menu_name=menu_name,
             eating_out_price=eating_out_price,
