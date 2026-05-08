@@ -32,9 +32,9 @@ async def purchase_item(item_id: str, user_id: str) -> dict[str, Any]:
 async def get_user_items(user_id: str) -> list[dict[str, Any]]:
     result = (
         supabase.table("user_items")
-        .select("created_at, flex_items(*)")
+        .select("purchased_at, flex_items(*)")
         .eq("user_id", user_id)
-        .order("created_at", desc=True)
+        .order("purchased_at", desc=True)
         .execute()
     )
     return [_purchased_item_to_api(row) for row in result.data]
@@ -50,7 +50,7 @@ def _get_one(table: str, column: str, value: str, error: str) -> dict[str, Any]:
 def _ensure_not_owned(user_id: str, item_id: str) -> None:
     result = (
         supabase.table("user_items")
-        .select("id")
+        .select("item_id")
         .eq("user_id", user_id)
         .eq("item_id", item_id)
         .limit(1)
@@ -73,4 +73,4 @@ def _spend_points(user: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
 
 def _purchased_item_to_api(row: dict[str, Any]) -> dict[str, Any]:
     item = flex_item_to_api(row["flex_items"])
-    return {**item, "purchasedAt": row["created_at"]}
+    return {**item, "purchasedAt": row["purchased_at"]}

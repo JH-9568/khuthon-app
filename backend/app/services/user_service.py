@@ -47,7 +47,7 @@ async def get_user_stats(user_id: str) -> dict[str, Any]:
     )
     items = (
         supabase.table("user_items")
-        .select("id", count="exact")
+        .select("item_id", count="exact")
         .eq("user_id", user_id)
         .execute()
     )
